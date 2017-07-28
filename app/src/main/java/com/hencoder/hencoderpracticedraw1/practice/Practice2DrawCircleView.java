@@ -25,10 +25,25 @@ public class Practice2DrawCircleView extends View {
         init();
     }
 
-    Paint mPaint = new Paint();
+    Paint mPaintFill = new Paint();
+    Paint mPaintStroke = new Paint();
+    Paint mPaintBlue = new Paint();
+    Paint mPaintStroke20 = new Paint();
 
     private void init() {
-
+        mPaintFill.setAntiAlias(true);
+        mPaintFill.setStyle(Paint.Style.FILL);
+        mPaintFill.setColor(Color.BLACK);
+        //
+        mPaintStroke.setColor(Color.BLACK);
+        mPaintStroke.setStyle(Paint.Style.STROKE);
+        //
+        mPaintBlue.setStyle(Paint.Style.FILL);
+        mPaintBlue.setColor(Color.BLUE);
+        //
+        mPaintStroke20.setColor(Color.BLACK);
+        mPaintStroke20.setStyle(Paint.Style.STROKE);
+        mPaintStroke20.setStrokeWidth(20);
     }
 
 
@@ -38,18 +53,9 @@ public class Practice2DrawCircleView extends View {
 
 //        练习内容：使用 canvas.drawCircle() 方法画圆
 //        一共四个圆：1.实心圆 2.空心圆 3.蓝色实心圆 4.线宽为 20 的空心圆
-        mPaint.setAntiAlias(true);
-        mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setColor(Color.BLACK);
-        canvas.drawCircle(getWidth() / 4, getHeight() / 4, 200, mPaint);
-        mPaint.setStyle(Paint.Style.STROKE);
-        canvas.drawCircle(getWidth() * 3 / 4, getHeight() / 4, 200, mPaint);
-        mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setColor(Color.BLUE);
-        canvas.drawCircle(getWidth() / 4, getHeight() * 3 / 4, 200, mPaint);
-        mPaint.setColor(Color.BLACK);
-        mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeWidth(20);
-        canvas.drawCircle(getWidth() * 3 / 4, getHeight() * 3 / 4, 200, mPaint);
+        canvas.drawCircle(getWidth() / 4, getHeight() / 4, 200, mPaintFill);
+        canvas.drawCircle(getWidth() * 3 / 4, getHeight() / 4, 200, mPaintStroke);
+        canvas.drawCircle(getWidth() / 4, getHeight() * 3 / 4, 200, mPaintBlue);
+        canvas.drawCircle(getWidth() * 3 / 4, getHeight() * 3 / 4, 200, mPaintStroke20);
     }
 }

@@ -29,6 +29,6 @@ public class Practice3DrawRectView extends View {
 
 //        练习内容：使用 canvas.drawRect() 方法画矩形
 
-        canvas.drawRect(getWidth() / 2 - 100, getHeight() / 2 - 100, getWidth() / 2 + 100, getHeight() / 2 + 100, mPaint);
+        canvas.drawRect(getWidth() / 2 - 200, getHeight() / 2 - 200, getWidth() / 2 + 200, getHeight() / 2 + 200, mPaint);
     }
 }
