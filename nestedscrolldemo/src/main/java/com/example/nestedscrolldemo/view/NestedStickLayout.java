@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.annotation.Px;
 import android.support.v4.view.NestedScrollingParent;
+import android.support.v4.view.NestedScrollingParentHelper;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +26,7 @@ public class NestedStickLayout extends LinearLayout implements NestedScrollingPa
     // 滚动 Action 的封装执行 Helper,用于辅助 View 的滑动
     private OverScroller mScroller;
 
+    private NestedScrollingParentHelper mParentHelper;
 
     public NestedStickLayout(Context context) {
         this(context, null);
@@ -42,6 +44,7 @@ public class NestedStickLayout extends LinearLayout implements NestedScrollingPa
 
     private void initView(Context context) {
         mScroller = new OverScroller(context);
+        mParentHelper = new NestedScrollingParentHelper(this);
     }
 
     private View mTopContentView;
@@ -152,12 +155,14 @@ public class NestedStickLayout extends LinearLayout implements NestedScrollingPa
         }
     }
 
+    //nestedScrollAxes View 滚动类型
     //true if this ViewParent accepts the nested scroll operation
     @Override
     public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes) {
         return true;
     }
 
+    // ChildView 滑动前回调 ParentView 的 Action
     @Override
     public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
         //super.onNestedPreScroll(target, dx, dy, consumed);
@@ -166,9 +171,16 @@ public class NestedStickLayout extends LinearLayout implements NestedScrollingPa
 
         if (hiddenTop || showTop) {
             scrollBy(0, dy);
-
+            //ParentView 将 Y 轴的滚动事件消费
             consumed[1] = dy;
         }
+    }
+
+
+    // ChildView 滑动后回调 ParentView 的操作
+    @Override
+    public void onNestedScroll(View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
+
     }
 
     @Override
@@ -195,15 +207,22 @@ public class NestedStickLayout extends LinearLayout implements NestedScrollingPa
         } else {
             animateScroll(velocityY, computeDuration(velocityY), consumed);
         }
-
-
-        return super.onNestedFling(target, velocityX, velocityY, consumed);
+        return true;
     }
 
     @Override
     public int getNestedScrollAxes() {
         //return SCROLL_AXIS_NONE;
-        return 0;
+        return mParentHelper.getNestedScrollAxes();
     }
 
+    @Override
+    public void onStopNestedScroll(View child) {
+        mParentHelper.onStopNestedScroll(child);
+    }
+
+    @Override
+    public void onNestedScrollAccepted(View child, View target, int axes) {
+        mParentHelper.onNestedScrollAccepted(child, target, axes);
+    }
 }
