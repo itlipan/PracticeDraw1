@@ -9,9 +9,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.view.VelocityTracker;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
@@ -24,16 +22,9 @@ import com.example.nestedscrolldemo.R;
  */
 
 public class NestedStickLayout extends LinearLayout implements NestedScrollingParent {
-    //Helper for tracking the velocity of touch events
-    private VelocityTracker mVelocityTracker;
     // 滚动 Action 的封装执行 Helper,用于辅助 View 的滑动
     private OverScroller mScroller;
 
-    private int mTouchSlop;
-
-    private int mMaximumFlingVelocity;
-    // 允许执行 Fling Action 手势动作的最小速度值
-    private int mMinimumFlingVelocity;
 
     public NestedStickLayout(Context context) {
         this(context, null);
@@ -51,12 +42,6 @@ public class NestedStickLayout extends LinearLayout implements NestedScrollingPa
 
     private void initView(Context context) {
         mScroller = new OverScroller(context);
-
-        final ViewConfiguration viewConfiguration = ViewConfiguration.get(context);
-        mTouchSlop = viewConfiguration.getScaledDoubleTapSlop();
-        mMaximumFlingVelocity = viewConfiguration.getScaledMaximumFlingVelocity();
-        mMinimumFlingVelocity = viewConfiguration.getScaledMinimumFlingVelocity();
-
     }
 
     private View mTopContentView;
@@ -89,13 +74,12 @@ public class NestedStickLayout extends LinearLayout implements NestedScrollingPa
             mOffsetAnimator.setIntValues(currentOffset, topHeight);
             mOffsetAnimator.start();
         } else {
-            //如果子View没有消耗down事件 那么就让自身滑倒0位置
+            //如果子View没有消耗down事件,显示 TopView,滚动自身到 y = 0;
             if (!consumed) {
                 mOffsetAnimator.setIntValues(currentOffset, 0);
                 mOffsetAnimator.setDuration(300);
                 mOffsetAnimator.start();
             }
-
         }
     }
 
@@ -127,7 +111,6 @@ public class NestedStickLayout extends LinearLayout implements NestedScrollingPa
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        //getChildAt(0).measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
         //
         mViewPager.getLayoutParams().height = getMeasuredHeight();
         setMeasuredDimension(getMeasuredWidth(), mTopContentView.getMeasuredHeight() + mViewPager.getMeasuredHeight());
@@ -139,12 +122,6 @@ public class NestedStickLayout extends LinearLayout implements NestedScrollingPa
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         mTopContentHeight = mTopContentView.getMeasuredHeight();
-    }
-
-    private void fling(int velocityY) {
-        // mScrolledY 对应 scrollTo - 移动 ViewContent 的左上原点位置
-        mScroller.fling(0, getScrollY(), 0, velocityY, 0, 0, 0, (int) mTopContentHeight);
-        invalidate();
     }
 
     @Override
@@ -229,16 +206,4 @@ public class NestedStickLayout extends LinearLayout implements NestedScrollingPa
         return 0;
     }
 
-    private void initVelocityTrackerIfNotExists() {
-        if (mVelocityTracker == null) {
-            mVelocityTracker = VelocityTracker.obtain();
-        }
-    }
-
-    private void recycleVelocityTracker() {
-        if (mVelocityTracker != null) {
-            mVelocityTracker.recycle();
-            mVelocityTracker = null;
-        }
-    }
 }
