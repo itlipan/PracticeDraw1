@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/PracticeDraw1.iml" filepath="$PROJECT_DIR$/PracticeDraw1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PracticeMutiAndroid.iml" filepath="$PROJECT_DIR$/PracticeMutiAndroid.iml" />
+      <module fileurl="file://$PROJECT_DIR$/animationphysic/animationphysic.iml" filepath="$PROJECT_DIR$/animationphysic/animationphysic.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hintdrawdemo/hintdrawdemo.iml" filepath="$PROJECT_DIR$/hintdrawdemo/hintdrawdemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/nestedscrolldemo/nestedscrolldemo.iml" filepath="$PROJECT_DIR$/nestedscrolldemo/nestedscrolldemo.iml" />
     </modules>
   </component>

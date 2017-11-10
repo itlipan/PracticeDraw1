@@ -1,49 +1,37 @@
 package com.example.nestedscrolldemo;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import com.example.nestedscrolldemo.view.RedCircleTextView;
-
 public class MainActivity extends AppCompatActivity {
-
-    ViewPager mViewPager;
-    RedCircleTextView mRedCircleTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        initViewState();
-
-    }
-
-    private void initViewState() {
-        mViewPager = (ViewPager) findViewById(R.id.vp_tab);
-        mRedCircleTextView = (RedCircleTextView) findViewById(R.id.tv_content);
-        mRedCircleTextView.drawRedCircle(100);
-        final int length = 3;
-        final Fragment[] mFragments = new Fragment[length];
-        for (int i = 0; i < mFragments.length; i++) {
-            mFragments[i] = new TabFragment();
-        }
-        PagerAdapter mAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
-
+        setContentView(R.layout.activity_main2);
+        findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
-            public int getCount() {
-                return length;
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,FirstActivity.class);
+                startActivity(intent);
             }
+        });
 
+        findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
             @Override
-            public Fragment getItem(int position) {
-                return mFragments[position];
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,ScrollActivity.class);
+                startActivity(intent);
             }
-        };
-        mViewPager.setAdapter(mAdapter);
+        });
+
+        findViewById(R.id.button3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 }
