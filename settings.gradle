@@ -1,2 +1,2 @@
-include ':app', ':nestedscrolldemo', ':animationphysic', ':hintdrawdemo'
+include ':app', ':nestedscrolldemo', ':animationphysic', ':hintdrawdemo', ':appdemofort'
 rootProject.name = 'PracticeMutiAndroid'
