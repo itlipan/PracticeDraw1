@@ -61,7 +61,7 @@ public class ResizeTextView extends TextView {
     }
 
     private Paint reTextPaint;
-    private Rect  reMesureRect;
+    private Rect reMeasureRect;
     private Paint getResizePaint() {
         if (reTextPaint == null) {
             reTextPaint = new Paint(getPaint());
@@ -69,10 +69,10 @@ public class ResizeTextView extends TextView {
         return reTextPaint;
     }
     private Rect getReRect(){
-        if (reMesureRect == null){
-            reMesureRect = new Rect();
+        if (reMeasureRect == null){
+            reMeasureRect = new Rect();
         }
-        return reMesureRect;
+        return reMeasureRect;
     }
 
 
