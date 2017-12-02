@@ -39,6 +39,7 @@ public class ResizeTextView extends TextView {
 
 
     /**
+     * 实现的局限在于仅仅实现了单行的缩放 - 多行需要考虑 高度,在多行显示完毕之后,再考虑缩小
      * @param text
      * @param width textView 宽度
      */
@@ -73,4 +74,8 @@ public class ResizeTextView extends TextView {
         }
         return reMesureRect;
     }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // 思路2  利用 onMeasure 以及 onTextChange 函数实现
 }
