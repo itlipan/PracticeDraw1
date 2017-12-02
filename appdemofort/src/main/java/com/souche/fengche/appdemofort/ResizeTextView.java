@@ -87,8 +87,9 @@ public class ResizeTextView extends TextView {
         int width = MeasureSpec.getSize(widthMeasureSpec);//从 spec 中提取测量大小值
         int height = getMeasuredHeight();
         Log.e("Resize", "height: 1. " + height + " 2. " + MeasureSpec.getSize(heightMeasureSpec));
+        MeasureSpec.makeMeasureSpec(height,MeasureSpec.getMode(heightMeasureSpec));// 构造 mask 测量高度值
         refitText(getText().toString(),width);
-        this.setMeasuredDimension(width,height);
+        this.setMeasuredDimension(width,height);// 何时用真实测量值 何时用 mask 测量值(格式化)要明确
     }
 
     @Override
