@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.widget.TextView;
 
@@ -78,4 +79,33 @@ public class ResizeTextView extends TextView {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // 思路2  利用 onMeasure 以及 onTextChange 函数实现
+
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int width = MeasureSpec.getSize(widthMeasureSpec);//从 spec 中提取测量大小值
+        int height = getMeasuredHeight();
+        Log.e("Resize", "height: 1. " + height + " 2. " + MeasureSpec.getSize(heightMeasureSpec));
+        refitText(getText().toString(),width);
+        this.setMeasuredDimension(width,height);
+    }
+
+    @Override
+    protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
+        super.onTextChanged(text, start, lengthBefore, lengthAfter);
+        refitText(text.toString(),getWidth());
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        if (w != oldw){
+            refitText(getText().toString(),w);
+        }
+    }
+
+    private void refitText(String info, int width) {
+
+    }
 }
