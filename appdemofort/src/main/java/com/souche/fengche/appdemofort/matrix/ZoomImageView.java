@@ -7,6 +7,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -49,6 +50,9 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
 
     /// Touch Move
     private int mTouchSlop;
+
+    /// DoubleCheck
+    private GestureDetector mGestureDetector;
 
     private void initView(Context context) {
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();//move 阈值
@@ -100,6 +104,7 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 mScaleGestureDetector.onTouchEvent(event);
+                mGestureDetector.onTouchEvent(event);
 
                 float x = 0, y = 0;
                 int pointCount = event.getPointerCount();//拖动时的多点触控优化,如用户先点击一个手指,接着另外的手指按下
@@ -128,10 +133,10 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
                         if (mIsCanDrage) {
                             RectF rectF = getMatrixRecF();
                             if (getDrawable() != null) {
-                                if (rectF.width() < getWidth()) {
+                                if (rectF.width() <= getWidth()) {// 相等时也需要校验,差值消除
                                     dx = 0;
                                 }
-                                if (rectF.height() < getHeight()) {
+                                if (rectF.height() <= getHeight()) {
                                     dy = 0;
                                 }
                                 mMatrix.postTranslate(dx, dy);
@@ -148,8 +153,6 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
                     }
                     break;
                 }
-
-
                 return true;
             }
 
@@ -158,6 +161,61 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
                 return Math.sqrt(dx * dx + dy * dy) > mTouchSlop;
             }
         });
+
+        mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                if (mIsInAutoScale) return true;
+
+                float x = e.getX();
+                float y = e.getY();
+                if (getCurrentScaleValue() < mMidScale) {
+                    post(new AutoRunnable(mMidScale,x,y));
+                } else {
+                    post(new AutoRunnable(mInitScale,x,y));
+                }
+                return true;
+            }
+        });
+    }
+    private boolean mIsInAutoScale = false;
+    private final class AutoRunnable implements Runnable{
+        private final float SMALL = 0.92f;
+        private final float BIG = 1.08f;
+        private float mTempScale;
+        private float mTargetScale;
+        private float mPointX;
+        private float mPointY;
+
+        private AutoRunnable(float targetScale,float pointX,float pointY) {
+            mTargetScale = targetScale;
+            mPointX = pointX;
+            mPointY = pointY;
+            if (getCurrentScaleValue() < mTargetScale){// 当前操作是要放大还是缩小
+                mTempScale = BIG;
+            }else if (getCurrentScaleValue() > mTargetScale){
+                mTempScale = SMALL;
+            }
+        }
+
+        @Override
+        public void run() {
+            mMatrix.postScale(mTempScale,mTempScale,mPointX,mPointY);
+            checkImgBordAndCenterWhenScale();
+            resetViewMatrix();
+
+            if (mTempScale > sFloatTagOne && getCurrentScaleValue() < mTargetScale){//需要继续放大
+                postDelayed(this,20);
+            }else if (mTempScale < sFloatTagOne && getCurrentScaleValue() > mTargetScale){//需要继续放大
+                postDelayed(this,20);
+            }else {
+                mMatrix.postScale(mTargetScale/getCurrentScaleValue(),mTargetScale/getCurrentScaleValue(),mPointX,mPointY);
+                checkImgBordAndCenterWhenScale();
+                resetViewMatrix();
+
+                mIsInAutoScale = false;
+            }
+        }
     }
 
     private void checkBorderWhenTranslate() {
@@ -182,7 +240,7 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
                 deX = w - rectF.right;
             }
         }
-        mMatrix.postTranslate(deX,deY);
+        mMatrix.postTranslate(deX, deY);
         resetViewMatrix();
     }
 
