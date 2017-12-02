@@ -29,5 +29,12 @@ public class MainActivity extends AppCompatActivity {
                 tvInfo.setText(String.valueOf(infoLength));
             }
         });
+        findViewById(R.id.rtv_resize_text_info).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ResizeTextView tv = findViewById(R.id.rtv_resize_text_info);
+                tv.setText(tv.getText().toString() + "哈");
+            }
+        });
     }
 }
