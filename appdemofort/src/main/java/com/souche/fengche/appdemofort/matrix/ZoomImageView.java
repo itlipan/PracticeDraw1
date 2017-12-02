@@ -124,6 +124,14 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
                 mLastPointerCount = pointCount;
 
                 switch (event.getActionMasked()) {
+                    case MotionEvent.ACTION_DOWN:{
+                        // More Fix
+                        // 如果没有左右移动到图片的边界 移动事件由 View 本身处理请求不被父 View 拦截
+                        //getParent().requestDisallowInterceptTouchEvent(true);
+                        if (Math.abs(getMatrixRecF().width() - getWidth()) > 0.01f){
+                            getParent().requestDisallowInterceptTouchEvent(true);
+                        }
+                    }break;
                     case MotionEvent.ACTION_MOVE: {
                         float dx = x - mLastX;
                         float dy = y - mLastY;
