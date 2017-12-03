@@ -261,22 +261,6 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
     }
 
     /**
-     * 获取当前图片被 Matrix 应用变换后的图片矩形边界
-     * @return
-     */
-    private RectF getMatrixRecF() {
-        RectF rectF = new RectF();
-
-        Drawable d = getDrawable();
-        if (d == null) return rectF;
-
-
-        rectF.set(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
-        mMatrix.mapRect(rectF);//Apply this matrix to the rectangle  获取图片应用 Matrix 之后的 img border
-        return rectF;
-    }
-
-    /**
      * 以手势操作点为中心对图片进行缩放可能出现的 图片边缘白边问题
      */
     private void checkImgBordAndCenterWhenScale() {
@@ -317,18 +301,34 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
         setImageMatrix(mMatrix);
     }
 
+    /**
+     * 获取当前图片被 Matrix 应用变换后的图片矩形边界
+     */
+    private RectF getMatrixRecF() {
+        RectF rectF = new RectF();
+
+        Drawable d = getDrawable();
+        if (d == null) return rectF;
+
+
+        rectF.set(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+        mMatrix.mapRect(rectF);//Apply this matrix to the rectangle  获取图片应用 Matrix 之后的 img border
+        return rectF;
+    }
+
     private float getCurrentScaleValue() {
         final float[] values = new float[9];
         mMatrix.getValues(values);
-        return values[Matrix.MSCALE_X];// 一维数组 9个数字表示 3维矩阵
+        return values[Matrix.MSCALE_X];// 一维数组 9个数字表示 3维矩阵,矩阵中对应位置 Value 的物理含义
     }
 
-    /**
-     * 1 . 图片的自缩放,防止图片过大导致的内存浪费 OOM
-     */
     @Override
     public void onGlobalLayout() {
-        //图片大小自适应
+        firstInitScaleLayout();
+    }
+
+    //图片初始化显示时的自适应缩放
+    private void firstInitScaleLayout() {
         //视图数变化时会触发 CallBack ,防止多次缩放操作
         if (!isHasAutoLayoutImg) {
             isHasAutoLayoutImg = true;
