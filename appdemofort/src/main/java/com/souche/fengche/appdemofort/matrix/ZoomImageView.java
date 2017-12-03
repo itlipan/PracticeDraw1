@@ -64,7 +64,7 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
         mScaleGestureDetector = new ScaleGestureDetector(context, new ScaleGestureDetector.OnScaleGestureListener() {
             @Override
             public boolean onScale(ScaleGestureDetector detector) {
-                float scaleFactor = detector.getScaleFactor();
+                float scaleFactor = detector.getScaleFactor();//放大缩小的乘数 scaling factor from the previous scale event to the current
 
                 if (getDrawable() == null) return true;
 
@@ -136,10 +136,10 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
                     }
                     break;
                     case MotionEvent.ACTION_MOVE: {
-                        float dx = x - mLastX;
+                        float dx = x - mLastX;//Move 事件中常见的处理移动距离的逻辑
                         float dy = y - mLastY;
                         if (!mIsCanBeDrag) {
-                            mIsCanBeDrag = isMoveAction(dx, dy);
+                            mIsCanBeDrag = isMoveAction(dx, dy);// 判断是否是 Move 事件
                         }
                         if (mIsCanBeDrag) {
                             RectF rectF = getMatrixRecF();
@@ -176,7 +176,7 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
         mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onDoubleTap(MotionEvent e) {
-                if (mIsInAutoScale) return true;
+                if (mIsInAutoScale) return true;//正在响应上次的双击事件
 
                 float x = e.getX();
                 float y = e.getY();
@@ -220,7 +220,7 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
                 postDelayed(this, 20);
             } else if (mTempScale < sFloatTagOne && getCurrentScaleValue() > mTargetScale) {//需要继续缩小
                 postDelayed(this, 20);
-            } else {// 目标值调整结束
+            } else {// 以目标值放大或缩小步进超过了 target,直接向目标值调整结束本次
                 scaleImgToTargetMatrixValue(mTargetScale / getCurrentScaleValue());
 
                 mIsInAutoScale = false;
