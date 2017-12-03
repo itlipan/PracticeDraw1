@@ -54,7 +54,7 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
 
     /// DoubleCheck
     private GestureDetector mGestureDetector;
-    private boolean mIsInAutoScale = false;//当前是否处于双击缩放过程中
+    private volatile boolean mIsInAutoScale = false;//当前是否处于双击缩放过程中
 
     private void initView(Context context) {
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();//move 阈值
@@ -100,7 +100,7 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
         setOnTouchListener(new OnTouchListener() {
             float mLastY;
             float mLastX;
-            boolean mIsCanDrage;// 是否能够被移动
+            boolean mIsCanBeDrag;// 是否能够被移动
             int mLastPointerCount;
 
             @Override
@@ -109,7 +109,7 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
                 mGestureDetector.onTouchEvent(event);
 
                 float x = 0, y = 0;
-                int pointCount = event.getPointerCount();//拖动时的多点触控优化,如用户先点击一个手指,接着另外的手指按下
+                final int pointCount = event.getPointerCount();//拖动时的多点触控优化,如用户先点击一个手指,接着另外的手指按下
                 //多点取各点的中心值
                 for (int i = 0; i < pointCount; i++) {
                     x += event.getX(i);
@@ -119,7 +119,7 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
                 y /= pointCount;// 取多点的中心值   一个点在左上一个点在右下,相当于一个手指在屏幕中心点击
 
                 if (mLastPointerCount != pointCount) {
-                    mIsCanDrage = false;
+                    mIsCanBeDrag = false;
                     mLastX = x;
                     mLastY = y;
                 }
@@ -127,7 +127,7 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
 
                 switch (event.getActionMasked()) {
                     case MotionEvent.ACTION_DOWN: {
-                        // More Fix
+                        // More
                         // 如果没有左右移动到图片的边界 移动事件由 View 本身处理请求不被父 View 拦截
                         //getParent().requestDisallowInterceptTouchEvent(true);
                         if (Math.abs(getMatrixRecF().width() - getWidth()) > sFloatTagCompare) {
@@ -138,10 +138,10 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
                     case MotionEvent.ACTION_MOVE: {
                         float dx = x - mLastX;
                         float dy = y - mLastY;
-                        if (!mIsCanDrage) {
-                            mIsCanDrage = isMoveAction(dx, dy);
+                        if (!mIsCanBeDrag) {
+                            mIsCanBeDrag = isMoveAction(dx, dy);
                         }
-                        if (mIsCanDrage) {
+                        if (mIsCanBeDrag) {
                             RectF rectF = getMatrixRecF();
                             if (getDrawable() != null) {
                                 if (rectF.width() <= getWidth()) {// 相等时也需要校验,差值消除
@@ -181,16 +181,16 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
                 float x = e.getX();
                 float y = e.getY();
                 if (getCurrentScaleValue() < mMidScale) {
-                    post(new AutoRunnable(mMidScale, x, y));
+                    post(new AutoScaleRunnable(mMidScale, x, y));
                 } else {
-                    post(new AutoRunnable(mInitScale, x, y));
+                    post(new AutoScaleRunnable(mInitScale, x, y));
                 }
                 return true;
             }
         });
     }
 
-    private final class AutoRunnable implements Runnable {
+    private final class AutoScaleRunnable implements Runnable {
         private final float SMALL = 0.92f;// 放大缩小的步进
         private final float BIG = 1.08f;
         private float mTempScale;
@@ -198,7 +198,7 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
         private float mPointX;
         private float mPointY;
 
-        private AutoRunnable(float targetScale, float pointX, float pointY) {
+        private AutoScaleRunnable(float targetScale, float pointX, float pointY) {
             mTargetScale = targetScale;
             mPointX = pointX;
             mPointY = pointY;
@@ -213,21 +213,24 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
         public void run() {
             mIsInAutoScale = true;
 
-            mMatrix.postScale(mTempScale, mTempScale, mPointX, mPointY);
-            checkImgBordAndCenterWhenScale();
-            resetViewMatrix();
+            // 先处理放大/缩小逻辑
+            scaleImgToTargetMatrixValue(mTempScale);
 
             if (mTempScale > sFloatTagOne && getCurrentScaleValue() < mTargetScale) {//需要继续放大
                 postDelayed(this, 20);
-            } else if (mTempScale < sFloatTagOne && getCurrentScaleValue() > mTargetScale) {//需要继续放大
+            } else if (mTempScale < sFloatTagOne && getCurrentScaleValue() > mTargetScale) {//需要继续缩小
                 postDelayed(this, 20);
-            } else {
-                mMatrix.postScale(mTargetScale / getCurrentScaleValue(), mTargetScale / getCurrentScaleValue(), mPointX, mPointY);
-                checkImgBordAndCenterWhenScale();
-                resetViewMatrix();
+            } else {// 目标值调整结束
+                scaleImgToTargetMatrixValue(mTargetScale / getCurrentScaleValue());
 
                 mIsInAutoScale = false;
             }
+        }
+
+        private void scaleImgToTargetMatrixValue(float scaleTimes) {
+            mMatrix.postScale(scaleTimes, scaleTimes, mPointX, mPointY);
+            checkImgBordAndCenterWhenScale();
+            resetViewMatrix();
         }
     }
 
