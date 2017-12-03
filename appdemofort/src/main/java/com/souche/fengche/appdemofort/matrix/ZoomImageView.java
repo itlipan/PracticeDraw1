@@ -22,6 +22,7 @@ import android.widget.ImageView;
 @SuppressLint("AppCompatCustomView")
 public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGlobalLayoutListener {
     private final float sFloatTagOne = 1.0f;// 用于 int 变换 float
+    private final float sFloatTagCompare = 0.01f;// float 比较
 
     public ZoomImageView(Context context) {
         super(context);
@@ -38,7 +39,7 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
         initView(context);
     }
 
-    ///
+    /// init
     private Matrix mMatrix;
     private ScaleGestureDetector mScaleGestureDetector;
 
@@ -53,6 +54,7 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
 
     /// DoubleCheck
     private GestureDetector mGestureDetector;
+    private boolean mIsInAutoScale = false;//当前是否处于双击缩放过程中
 
     private void initView(Context context) {
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();//move 阈值
@@ -77,7 +79,7 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
                     if (currentScale * scaleFactor < mInitScale) {
                         scaleFactor = mInitScale / currentScale;
                     }
-                    mMatrix.postScale(scaleFactor, scaleFactor, detector.getFocusX(), detector.getFocusY());
+                    mMatrix.postScale(scaleFactor, scaleFactor, detector.getFocusX(), detector.getFocusY());//以手势聚焦点为中心缩放
 
                     checkImgBordAndCenterWhenScale();
 
@@ -88,7 +90,7 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
 
             @Override
             public boolean onScaleBegin(ScaleGestureDetector detector) {
-                return true;
+                return true;//是否检测此次手势事件
             }
 
             @Override
@@ -103,7 +105,7 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                mScaleGestureDetector.onTouchEvent(event);
+                mScaleGestureDetector.onTouchEvent(event);//手势接口监听 Touch 事件
                 mGestureDetector.onTouchEvent(event);
 
                 float x = 0, y = 0;
@@ -124,14 +126,15 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
                 mLastPointerCount = pointCount;
 
                 switch (event.getActionMasked()) {
-                    case MotionEvent.ACTION_DOWN:{
+                    case MotionEvent.ACTION_DOWN: {
                         // More Fix
                         // 如果没有左右移动到图片的边界 移动事件由 View 本身处理请求不被父 View 拦截
                         //getParent().requestDisallowInterceptTouchEvent(true);
-                        if (Math.abs(getMatrixRecF().width() - getWidth()) > 0.01f){
+                        if (Math.abs(getMatrixRecF().width() - getWidth()) > sFloatTagCompare) {
                             getParent().requestDisallowInterceptTouchEvent(true);
                         }
-                    }break;
+                    }
+                    break;
                     case MotionEvent.ACTION_MOVE: {
                         float dx = x - mLastX;
                         float dy = y - mLastY;
@@ -178,46 +181,48 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
                 float x = e.getX();
                 float y = e.getY();
                 if (getCurrentScaleValue() < mMidScale) {
-                    post(new AutoRunnable(mMidScale,x,y));
+                    post(new AutoRunnable(mMidScale, x, y));
                 } else {
-                    post(new AutoRunnable(mInitScale,x,y));
+                    post(new AutoRunnable(mInitScale, x, y));
                 }
                 return true;
             }
         });
     }
-    private boolean mIsInAutoScale = false;
-    private final class AutoRunnable implements Runnable{
-        private final float SMALL = 0.92f;
+
+    private final class AutoRunnable implements Runnable {
+        private final float SMALL = 0.92f;// 放大缩小的步进
         private final float BIG = 1.08f;
         private float mTempScale;
         private float mTargetScale;
         private float mPointX;
         private float mPointY;
 
-        private AutoRunnable(float targetScale,float pointX,float pointY) {
+        private AutoRunnable(float targetScale, float pointX, float pointY) {
             mTargetScale = targetScale;
             mPointX = pointX;
             mPointY = pointY;
-            if (getCurrentScaleValue() < mTargetScale){// 当前操作是要放大还是缩小
+            if (getCurrentScaleValue() < mTargetScale) {// 当前操作是要放大还是缩小
                 mTempScale = BIG;
-            }else if (getCurrentScaleValue() > mTargetScale){
+            } else if (getCurrentScaleValue() > mTargetScale) {
                 mTempScale = SMALL;
             }
         }
 
         @Override
         public void run() {
-            mMatrix.postScale(mTempScale,mTempScale,mPointX,mPointY);
+            mIsInAutoScale = true;
+
+            mMatrix.postScale(mTempScale, mTempScale, mPointX, mPointY);
             checkImgBordAndCenterWhenScale();
             resetViewMatrix();
 
-            if (mTempScale > sFloatTagOne && getCurrentScaleValue() < mTargetScale){//需要继续放大
-                postDelayed(this,20);
-            }else if (mTempScale < sFloatTagOne && getCurrentScaleValue() > mTargetScale){//需要继续放大
-                postDelayed(this,20);
-            }else {
-                mMatrix.postScale(mTargetScale/getCurrentScaleValue(),mTargetScale/getCurrentScaleValue(),mPointX,mPointY);
+            if (mTempScale > sFloatTagOne && getCurrentScaleValue() < mTargetScale) {//需要继续放大
+                postDelayed(this, 20);
+            } else if (mTempScale < sFloatTagOne && getCurrentScaleValue() > mTargetScale) {//需要继续放大
+                postDelayed(this, 20);
+            } else {
+                mMatrix.postScale(mTargetScale / getCurrentScaleValue(), mTargetScale / getCurrentScaleValue(), mPointX, mPointY);
                 checkImgBordAndCenterWhenScale();
                 resetViewMatrix();
 
@@ -252,6 +257,10 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
         resetViewMatrix();
     }
 
+    /**
+     * 获取当前图片被 Matrix 应用变换后的图片矩形边界
+     * @return
+     */
     private RectF getMatrixRecF() {
         RectF rectF = new RectF();
 
@@ -350,7 +359,7 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
 
             //移动图片至 View 中心  平移
             mMatrix.postScale(mInitScale, mInitScale);
-            mMatrix.postTranslate(0, (h - dh) / 2);
+            mMatrix.postTranslate((w - getMatrixRecF().width()) / 2, (h - getMatrixRecF().height()) / 2);
             resetViewMatrix();
         }
     }
