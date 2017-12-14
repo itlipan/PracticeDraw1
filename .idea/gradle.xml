@@ -5,14 +5,18 @@
       <GradleProjectSettings>
         <option name="distributionType" value="LOCAL" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleHome" value="$USER_HOME$/Library/Android/gradle-4.1" />
+        <option name="gradleHome" value="$USER_HOME$/Library/Android/gradle-4.4" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/androidhotfixdemo" />
             <option value="$PROJECT_DIR$/animationphysic" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/appdemofort" />
+            <option value="$PROJECT_DIR$/appimeswitch" />
+            <option value="$PROJECT_DIR$/buildsrc" />
             <option value="$PROJECT_DIR$/hintdrawdemo" />
+            <option value="$PROJECT_DIR$/hotfixpatch" />
             <option value="$PROJECT_DIR$/nestedscrolldemo" />
           </set>
         </option>
