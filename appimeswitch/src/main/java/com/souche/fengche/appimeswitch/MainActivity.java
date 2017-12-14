@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // 方案1: 切换时输入法 mod 实现
+    // 主要是 两种输入法 mod 对 ui 的影响的学习
     private void setSoftInputModForNothing() {
         updateActivitySoftInputMethod(this, WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
     }
@@ -89,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
     // 方案2 : 利用LinearLayout 中锁定内容高度, 显示输入法 ,最后还原 Content 让其自适应
     // 而后续利用 表情面板的高度与软键盘弹出时高度一致 时的显示隐藏
     // 实现 输入 bar 的位置固定,最终实现跳动的解决
+    // bar 的高度为何会固定?
+    // 在页面中元素改变时 content 高度不变, 输入法和表情面板的高度是等同互相可替换的,因而 bar 的所处位置也就被固定
 
     private void lockContentHeight(ViewGroup mContentView) {
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mContentView.getLayoutParams();
