@@ -2,15 +2,19 @@ package com.souche.fengche.appimeswitch;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+
+import com.souche.fengche.appimeswitch.drag.DragActivity;
+import com.souche.fengche.appimeswitch.drag.swipe.SwipActivity;
 
 /**
  * 深刻理解 输入法模式
@@ -27,6 +31,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        go2SwipeAct();
+    }
+
+    private void go2DragAct() {
+        Intent intent = new Intent(this, DragActivity.class);
+        startActivity(intent);
+    }
+
+    private void go2SwipeAct() {
+        Intent intent = new Intent(this, SwipActivity.class);
+        startActivity(intent);
     }
 
     /**
@@ -99,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         params.weight = 0.0F;
     }
 
-    private void unlockContentHeightDelayed(View view,final ViewGroup mContentView) {
+    private void unlockContentHeightDelayed(View view, final ViewGroup mContentView) {
         view.postDelayed(new Runnable() {
             @Override
             public void run() {
