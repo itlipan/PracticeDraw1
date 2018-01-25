@@ -3,6 +3,7 @@ package com.example.nestedscrolldemo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
@@ -27,10 +28,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.button3).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.button3).setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-
+            public boolean onTouch(View v, MotionEvent event) {
+                // 打印
+                Thread.dumpStack();
+                return false;
             }
         });
     }

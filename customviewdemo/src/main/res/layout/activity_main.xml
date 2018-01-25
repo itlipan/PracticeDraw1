@@ -1,17 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.souche.fengche.clickexpendviewdemo.MainActivity">
 
-    <com.souche.fengche.clickexpendviewdemo.ExpandTextView
-        android:id="@+id/tv"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:scrollbarSize="2dp"
+        android:scrollbarThumbVertical="@drawable/prome_scroller"
+        android:scrollbars="vertical">
+
+        <com.souche.fengche.clickexpendviewdemo.expand.ExpandTextView
+            android:id="@+id/tv"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"/>
+    </ScrollView>
+
+    <com.souche.fengche.clickexpendviewdemo.swipe.LeftSwipeView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginBottom="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_marginTop="16dp"
+        android:background="@color/colorAccent">
 
-</android.support.constraint.ConstraintLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@color/colorPrimaryDark"
+            android:gravity="center"
+            android:text="我是内容 View"/>
+
+        <TextView
+            android:layout_width="48dp"
+            android:layout_height="44dp"
+            android:gravity="center"
+            android:text="喜爱"/>
+
+        <TextView
+            android:layout_width="48dp"
+            android:layout_height="44dp"
+            android:gravity="center"
+            android:text="置顶"/>
+
+        <TextView
+            android:layout_width="48dp"
+            android:layout_height="44dp"
+            android:gravity="center"
+            android:text="删除"/>
+
+    </com.souche.fengche.clickexpendviewdemo.swipe.LeftSwipeView>
+</LinearLayout>

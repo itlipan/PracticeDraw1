@@ -1,4 +1,4 @@
-package com.souche.fengche.clickexpendviewdemo;
+package com.souche.fengche.clickexpendviewdemo.expand;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -20,6 +20,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
+
+import com.souche.fengche.clickexpendviewdemo.R;
 
 /**
  * Created by Lee on 2018/1/11.
@@ -97,20 +99,20 @@ public class ExpandTextView extends TextView {
         tr.recycle();
     }
 
+
     private TouchableSpan mTouchableSpan;
+    private boolean mAddedObserver;
+    private ViewTreeObserver.OnGlobalLayoutListener mOnGlobalListener;
 
     private void initView(Context context, AttributeSet attrs) {
         mTouchableSpan = new TouchableSpan();
 
         setMovementMethod(new LinkTouchMovementMethod());
 
-        afterSetTextChangeViewObserver();
-    }
-
-    private void afterSetTextChangeViewObserver() {
-        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        mOnGlobalListener = new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
+                mAddedObserver = false;
                 final ViewTreeObserver obs = getViewTreeObserver();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     obs.removeOnGlobalLayoutListener(this);
@@ -119,7 +121,15 @@ public class ExpandTextView extends TextView {
                 }
                 setTextInternal(makeNewTextByCurrentViewState(), mBufferType);
             }
-        });
+        };
+        addAfterSetTextChangeViewObserver();
+    }
+
+    private void addAfterSetTextChangeViewObserver() {
+        if (!mAddedObserver){
+            mAddedObserver = true;
+            getViewTreeObserver().addOnGlobalLayoutListener(mOnGlobalListener);
+        }
     }
 
 
@@ -157,24 +167,22 @@ public class ExpandTextView extends TextView {
      * @return CharSequence / SpannableString
      */
     public CharSequence makeNewTextByCurrentViewState() {
-
         if (getStringLength(mOriginFullText) <= 1) {
             return mOriginFullText;
         }
-
-        final int contentLength = mOriginFullText.length();
-
         Layout txtLayout = getLayout();
         int txtWidth = txtLayout == null ? 0 : txtLayout.getWidth();
         if (txtWidth <= 0) {
             txtWidth = getWidth() - getPaddingLeft() - getPaddingRight();
         }
-
+        if (txtWidth <= 0) {
+            addAfterSetTextChangeViewObserver();
+            return mOriginFullText;
+        }
         txtLayout = getDynamicLayout(txtWidth);
         // 小于需要显示展开收起行,直接显示原文本 || 展开同理
         final int originLineCount = txtLayout.getLineCount();
         if (originLineCount < mMaxLineToShrink) return mOriginFullText;
-
         if (mCurrentTextState == TYPE_SHRINK) {
             // 获取最后一行,显示 Clickable Span 行的 原始数据 index
             final int lastLineIndexEnd = txtLayout.getLineEnd(mMaxLineToShrink - 1);// line 从 0 开始
@@ -200,9 +208,10 @@ public class ExpandTextView extends TextView {
                 }
             }
             final int finalTrimIndex = lastLineIndexEnd - offsetIndex;
-            String finalInfo = removeEndLineBreak(mOriginFullText.subSequence(0, finalTrimIndex));
-            SpannableStringBuilder shrinkSpan = new SpannableStringBuilder(finalInfo)
-                .append(mEllipsisEndOfText + (mIsNeedShowExpandSpan ? (mGapBySpan + mHintInfoClickToExpand) : ""));
+            final String finalInfo = removeEndLineBreak(mOriginFullText.subSequence(0, finalTrimIndex));
+            final SpannableStringBuilder shrinkSpan = new SpannableStringBuilder(finalInfo)
+                .append(mEllipsisEndOfText)
+                .append((mIsNeedShowExpandSpan ? (mGapBySpan + mHintInfoClickToExpand) : ""));
             if (mIsNeedShowExpandSpan) {
                 final int totalSpanLength = shrinkSpan.length();
                 shrinkSpan.setSpan(mTouchableSpan, totalSpanLength - getStringLength(mHintInfoClickToExpand), totalSpanLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

@@ -10,6 +10,7 @@
       <module fileurl="file://$PROJECT_DIR$/appimeswitch/appimeswitch.iml" filepath="$PROJECT_DIR$/appimeswitch/appimeswitch.iml" />
       <module fileurl="file://$PROJECT_DIR$/buildsrc/buildsrc.iml" filepath="$PROJECT_DIR$/buildsrc/buildsrc.iml" />
       <module fileurl="file://$PROJECT_DIR$/customviewdemo/clickexpendviewdemo.iml" filepath="$PROJECT_DIR$/customviewdemo/clickexpendviewdemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/customviewdemo/customviewdemo.iml" filepath="$PROJECT_DIR$/customviewdemo/customviewdemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/hintdrawdemo/hintdrawdemo.iml" filepath="$PROJECT_DIR$/hintdrawdemo/hintdrawdemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/hotfixpatch/hotfixpatch.iml" filepath="$PROJECT_DIR$/hotfixpatch/hotfixpatch.iml" />
       <module fileurl="file://$PROJECT_DIR$/nestedscrolldemo/nestedscrolldemo.iml" filepath="$PROJECT_DIR$/nestedscrolldemo/nestedscrolldemo.iml" />

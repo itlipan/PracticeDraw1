@@ -20,6 +20,8 @@ import com.example.nestedscrolldemo.R;
 
 /**
  * Created by Lee on 2017/8/13.
+ *
+ * NestedScrollingParent 实现
  */
 
 public class NestedStickLayout extends LinearLayout implements NestedScrollingParent {
@@ -151,7 +153,7 @@ public class NestedStickLayout extends LinearLayout implements NestedScrollingPa
         if (mScroller.computeScrollOffset()) {// 检测是否完成滚动
             // 更新 View 当前的 mScrollX  以及 mScrollY 值
             scrollTo(0, mScroller.getCurrY());
-            invalidate();
+            invalidate();// computeScroll 由 View.draw 触发, invalidate 触发 draw,进而形成滚动 View 更新循环链
         }
     }
 
@@ -159,7 +161,8 @@ public class NestedStickLayout extends LinearLayout implements NestedScrollingPa
     //true if this ViewParent accepts the nested scroll operation
     @Override
     public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes) {
-        return true;
+        return (nestedScrollAxes & ViewCompat.SCROLL_AXIS_VERTICAL) != 0;
+        //return true;
     }
 
     // ChildView 滑动前回调 ParentView 的 Action
@@ -172,6 +175,7 @@ public class NestedStickLayout extends LinearLayout implements NestedScrollingPa
         if (hiddenTop || showTop) {
             scrollBy(0, dy);
             //ParentView 将 Y 轴的滚动事件消费
+            //若 ParentView 只消耗一半的 dy 则可以设定  consumed[1] = dy/2;
             consumed[1] = dy;
         }
     }
@@ -186,7 +190,19 @@ public class NestedStickLayout extends LinearLayout implements NestedScrollingPa
     @Override
     public boolean onNestedPreFling(View target, float velocityX, float velocityY) {
         //return super.onNestedPreFling(target, velocityX, velocityY);
+        // ParentView 是否先消耗处理 fling 事件
         return false;
+
+        //自行处理 fling
+        /*if (getScrollY() > mTopContentHeight) return false;
+        fling((int) velocityY);
+        return true;*/
+    }
+
+    // 可以利用 mScroller 处理 fling 事件,此处使用的动画计算
+    private void fling(int velocityY) {
+        mScroller.fling(0, getScrollY(), 0, velocityY, 0, 0, 0, (int) mTopContentHeight);
+        invalidate();
     }
 
 

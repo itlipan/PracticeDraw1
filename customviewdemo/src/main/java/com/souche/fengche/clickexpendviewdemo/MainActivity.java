@@ -3,6 +3,8 @@ package com.souche.fengche.clickexpendviewdemo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.souche.fengche.clickexpendviewdemo.expand.ExpandTextView;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override

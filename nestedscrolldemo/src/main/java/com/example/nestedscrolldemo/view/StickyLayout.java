@@ -21,6 +21,8 @@ import com.example.nestedscrolldemo.R;
 
 /**
  * Created by Lee on 2017/8/12.
+ *
+ * StickyLayout 传统实现
  */
 
 public class StickyLayout extends LinearLayout {
@@ -58,7 +60,7 @@ public class StickyLayout extends LinearLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mViewPager = (ViewPager) findViewById(R.id.vp_tab);
+        mViewPager = findViewById(R.id.vp_tab);
         mViewTopContent = findViewById(R.id.ll_content);
     }
 
@@ -229,7 +231,7 @@ public class StickyLayout extends LinearLayout {
         int currentItem = mViewPager.getCurrentItem();
         PagerAdapter adapter = mViewPager.getAdapter();
         Fragment fragment = (Fragment) adapter.instantiateItem(mViewPager, currentItem);
-        mInnerScrollView = (ViewGroup) fragment.getView().findViewById(R.id.rv_list);
+        mInnerScrollView = fragment.getView().findViewById(R.id.rv_list);
     }
 
     private void initVelocityTrackerIfNotExists() {
