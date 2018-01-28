@@ -36,6 +36,7 @@ import android.support.v7.widget.TooltipCompat;
 import android.text.Layout;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -68,7 +69,7 @@ import static android.support.v4.view.ViewPager.SCROLL_STATE_SETTLING;
 
 /**
  * copy of {@link android.support.design.widget.TabLayout}
- *
+ * <p>
  * add support for adjusting width of Indicator
  */
 
@@ -241,7 +242,7 @@ public class ReDefinedTabLayout extends HorizontalScrollView {
             a.getDimensionPixelSize(R.styleable.ReDefinedTabLayout_tabIndicatorHeight, 0));
         // default value was 28dp
         mTabStrip.setSelectedIndicatorWidth(
-            a.getDimensionPixelSize(R.styleable.ReDefinedTabLayout_tabIndicatorWidth, dpToPx(28)));
+            a.getDimensionPixelSize(R.styleable.ReDefinedTabLayout_tabIndicatorWidth, dpToPx(32)));// default line width
         mTabStrip.setSelectedIndicatorColor(a.getColor(R.styleable.ReDefinedTabLayout_tabIndicatorColor, 0));
 
         mTabPaddingStart = mTabPaddingTop = mTabPaddingEnd = mTabPaddingBottom = a
@@ -908,7 +909,7 @@ public class ReDefinedTabLayout extends HorizontalScrollView {
         if (child instanceof ReDefinedTabItem) {
             addTabFromItemView((ReDefinedTabItem) child);
         } else {
-            throw new IllegalArgumentException("Only CustomTabItem instances can be added to TabLayout");
+            throw new IllegalArgumentException("Only ReDefinedTabItem instances can be added to TabLayout");
         }
     }
 
@@ -1443,6 +1444,8 @@ public class ReDefinedTabLayout extends HorizontalScrollView {
 
         private int mDefaultMaxLines = 2;
 
+        int mTextWidth = -1;
+
         public TabView(Context context) {
             super(context);
             if (mTabBackgroundResId != 0) {
@@ -1574,6 +1577,7 @@ public class ReDefinedTabLayout extends HorizontalScrollView {
                         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
                     }
                 }
+                //mTextWidth = mTextView.getMeasuredWidth();
             }
         }
 
@@ -1715,7 +1719,7 @@ public class ReDefinedTabLayout extends HorizontalScrollView {
 
     private class SlidingTabStrip extends LinearLayout {
         private int mSelectedIndicatorHeight;
-        private int mSelectedIndicatorWidth;
+        private int mSelectedIndicatorWidth;  // this is changed
         private final Paint mSelectedIndicatorPaint;
 
         int mSelectedPosition = -1;
@@ -1748,7 +1752,7 @@ public class ReDefinedTabLayout extends HorizontalScrollView {
             }
         }
 
-        void setSelectedIndicatorWidth(int width) {
+        void setSelectedIndicatorWidth(int width) {// simulator height
             if (mSelectedIndicatorWidth != width) {
                 mSelectedIndicatorWidth = width;
                 ViewCompat.postInvalidateOnAnimation(this);
@@ -1873,6 +1877,7 @@ public class ReDefinedTabLayout extends HorizontalScrollView {
             int left, right;
 
             if (selectedTitle != null && selectedTitle.getWidth() > 0) {
+                // calculate indicator left
                 left = selectedTitle.getLeft() + (selectedTitle.getWidth() - mSelectedIndicatorWidth) / 2;
                 right = left + mSelectedIndicatorWidth;
 

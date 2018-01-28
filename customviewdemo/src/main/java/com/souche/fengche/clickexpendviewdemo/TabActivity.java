@@ -12,7 +12,7 @@ import com.souche.fengche.clickexpendviewdemo.tab.widget.ReDefinedTabLayout;
 
 public class TabActivity extends AppCompatActivity {
 
-    private final String[] tabs = new String[]{"AAA", "BBB", "CCC"};
+    private final String[] tabs = new String[]{"AAA", "BBBBBBBBBB", "C","DD","EEEEE","FFFF"};
 
     private ViewPager mViewPager;
     private ReDefinedTabLayout mTab;
@@ -28,9 +28,6 @@ public class TabActivity extends AppCompatActivity {
 
     private void initViewPagerAdapter() {
         mViewPager.setAdapter(new TabPagerAdapter(getSupportFragmentManager()));
-        for (String tabInfo : tabs) {
-            mTab.addTab(mTab.newTab().setText(tabInfo));
-        }
         mTab.setupWithViewPager(mViewPager);
     }
 
@@ -47,7 +44,13 @@ public class TabActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 3;
+            return tabs.length;
+        }
+
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return tabs[position];
         }
     }
 
