@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.souche.fengche.clickexpendviewdemo.TabActivity">
+
+    <com.souche.fengche.clickexpendviewdemo.tab.widget.ReDefinedTabLayout
+        android:id="@+id/tab"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"/>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+</FrameLayout>
