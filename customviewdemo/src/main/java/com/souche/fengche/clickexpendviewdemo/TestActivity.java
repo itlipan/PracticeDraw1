@@ -26,6 +26,10 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
             }
             break;
+            case R.id.button3:{
+                Intent intent = new Intent(TestActivity.this,WidgetsActivity.class);
+                startActivity(intent);
+            }break;
         }
     }
 }
