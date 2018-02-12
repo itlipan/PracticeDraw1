@@ -240,8 +240,8 @@ public class ReDefinedTabLayout extends HorizontalScrollView {
 
         mTabStrip.setSelectedIndicatorHeight(
             a.getDimensionPixelSize(R.styleable.ReDefinedTabLayout_tabIndicatorHeight, 0));
-        // default value was 28dp
-        mTabStrip.setSelectedIndicatorWidth(
+
+        mTabStrip.setSelectedIndicatorWidth( // line width => default value was 32dp
             a.getDimensionPixelSize(R.styleable.ReDefinedTabLayout_tabIndicatorWidth, dpToPx(32)));// default line width
         mTabStrip.setSelectedIndicatorColor(a.getColor(R.styleable.ReDefinedTabLayout_tabIndicatorColor, 0));
 
@@ -1878,15 +1878,22 @@ public class ReDefinedTabLayout extends HorizontalScrollView {
 
             if (selectedTitle != null && selectedTitle.getWidth() > 0) {
                 // calculate indicator left
-                left = selectedTitle.getLeft() + (selectedTitle.getWidth() - mSelectedIndicatorWidth) / 2;
-                right = left + mSelectedIndicatorWidth;
+                /*left = selectedTitle.getLeft() + (selectedTitle.getWidth() - mSelectedIndicatorWidth) / 2;
+                right = left + mSelectedIndicatorWidth;*/
+                left = selectedTitle.getLeft();
+                right = left + selectedTitle.getWidth();
+
 
                 if (mSelectionOffset > 0f && mSelectedPosition < getChildCount() - 1) {
                     // Draw the selection partway between the tabs
                     View nextTitle = getChildAt(mSelectedPosition + 1);
-                    left = (int) (mSelectionOffset * (nextTitle.getLeft() + (nextTitle.getWidth() - mSelectedIndicatorWidth) / 2)
-                        + (1.0f - mSelectionOffset) * left);
-                    right = left + mSelectedIndicatorWidth;
+                    if (mSelectionOffset <= 0.5f) {
+                        left = left;
+                    } else {
+                        left = (int) (left + ((nextTitle.getLeft() - left) * 2 * (mSelectionOffset - 0.5f)));
+                    }
+                    right = (int) (mSelectionOffset * nextTitle.getRight() +
+                        (1.0f - mSelectionOffset) * right);
                 }
             } else {
                 left = right = -1;
@@ -1919,8 +1926,10 @@ public class ReDefinedTabLayout extends HorizontalScrollView {
                 return;
             }
 
-            final int targetLeft = targetView.getLeft() + (targetView.getWidth() - mSelectedIndicatorWidth) / 2;
-            final int targetRight = targetLeft + mSelectedIndicatorWidth;
+           /* final int targetLeft = targetView.getLeft() + (targetView.getWidth() - mSelectedIndicatorWidth) / 2;
+            final int targetRight = targetLeft + mSelectedIndicatorWidth;*/
+            final int targetLeft = targetView.getLeft();
+            final int targetRight = targetView.getRight();
             final int startLeft;
             final int startRight;
 
