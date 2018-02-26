@@ -4,6 +4,7 @@
         <attr name="tabIndicatorColor" format="color"/>
         <attr name="tabIndicatorHeight" format="dimension"/>
         <attr name="tabIndicatorWidth" format="dimension"/>
+        <attr name="tabIndicatorType" format="string"/>
         <attr name="tabContentStart" format="dimension"/>
         <attr name="tabBackground" format="reference"/>
         <attr name="tabMode">

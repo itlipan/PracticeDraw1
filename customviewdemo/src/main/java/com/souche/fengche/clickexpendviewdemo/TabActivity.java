@@ -12,7 +12,7 @@ import com.souche.fengche.clickexpendviewdemo.tab.widget.ReDefinedTabLayout;
 
 public class TabActivity extends AppCompatActivity {
 
-    private final String[] tabs = new String[]{"AAA", "BBBBBBBBBB", "C", "DD", "EEEEE", "FFFF"};
+    private final String[] tabs = new String[]{"AAA", "BBBBBBBBBB", "C", "DD"};
 
     private ViewPager mViewPager;
     private ReDefinedTabLayout mTab;

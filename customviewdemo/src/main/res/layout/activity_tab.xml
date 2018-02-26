@@ -7,14 +7,16 @@
     tools:context="com.souche.fengche.clickexpendviewdemo.TabActivity">
 
     <com.souche.fengche.clickexpendviewdemo.tab.widget.ReDefinedTabLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/tab"
         android:layout_width="match_parent"
-        android:layout_height="52dp"/>
+        android:layout_height="52dp"
+        app:tabIndicatorType="tabs"
+        app:tabIndicatorWidth="20dp"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
 
 </FrameLayout>

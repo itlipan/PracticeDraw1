@@ -36,7 +36,6 @@ import android.support.v7.widget.TooltipCompat;
 import android.text.Layout;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -75,6 +74,20 @@ import static android.support.v4.view.ViewPager.SCROLL_STATE_SETTLING;
 
 @ViewPager.DecorView
 public class ReDefinedTabLayout extends HorizontalScrollView {
+    /**
+     * 系统默认
+     */
+    public static final String TYPE_DEFAULT_SYSTEM = "system";
+
+    /**
+     * 固定宽度
+     */
+    public static final String TYPE_FIXED = "fixed";
+
+    /**
+     * 等于 tab TextView 宽度
+     */
+    public static final String TYPE_TAB = "tabs";
 
     private static final int DEFAULT_HEIGHT_WITH_TEXT_ICON = 72; // dps
     static final int DEFAULT_GAP_TEXT_ICON = 8; // dps
@@ -188,6 +201,8 @@ public class ReDefinedTabLayout extends HorizontalScrollView {
 
     final int mTabBackgroundResId;
 
+    private String mIndicatorType;
+
     int mTabMaxWidth = Integer.MAX_VALUE;
     private final int mRequestedTabMinWidth;
     private final int mRequestedTabMaxWidth;
@@ -243,6 +258,8 @@ public class ReDefinedTabLayout extends HorizontalScrollView {
 
         mTabStrip.setSelectedIndicatorWidth( // line width => default value was 32dp
             a.getDimensionPixelSize(R.styleable.ReDefinedTabLayout_tabIndicatorWidth, dpToPx(32)));// default line width
+        makeIndicatorType(a.getString(R.styleable.ReDefinedTabLayout_tabIndicatorType));
+
         mTabStrip.setSelectedIndicatorColor(a.getColor(R.styleable.ReDefinedTabLayout_tabIndicatorColor, 0));
 
         mTabPaddingStart = mTabPaddingTop = mTabPaddingEnd = mTabPaddingBottom = a
@@ -301,6 +318,14 @@ public class ReDefinedTabLayout extends HorizontalScrollView {
 
         // Now apply the tab mode and gravity
         applyModeAndGravity();
+    }
+
+    private void makeIndicatorType(String type) {
+        if (TextUtils.isEmpty(type)) {
+            mIndicatorType = TYPE_DEFAULT_SYSTEM;
+        }else  {
+            mIndicatorType = type;
+        }
     }
 
     /**
@@ -1444,7 +1469,7 @@ public class ReDefinedTabLayout extends HorizontalScrollView {
 
         private int mDefaultMaxLines = 2;
 
-        int mTextWidth = -1;
+        int mTabIndicatorInfoWidth = -1;
 
         public TabView(Context context) {
             super(context);
@@ -1577,7 +1602,17 @@ public class ReDefinedTabLayout extends HorizontalScrollView {
                         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
                     }
                 }
-                //mTextWidth = mTextView.getMeasuredWidth();
+
+            }
+        }
+
+        @Override
+        protected void onLayout(boolean changed, int l, int t, int r, int b) {
+            super.onLayout(changed, l, t, r, b);
+            if (mCustomView != null) {
+                mTabIndicatorInfoWidth = mCustomView.getMeasuredWidth();
+            } else {
+                mTabIndicatorInfoWidth = mTextView.getMeasuredWidth();
             }
         }
 
@@ -1873,27 +1908,54 @@ public class ReDefinedTabLayout extends HorizontalScrollView {
         }
 
         private void updateIndicatorPosition() {
-            final View selectedTitle = getChildAt(mSelectedPosition);
+            final View selectedTitleTab = getChildAt(mSelectedPosition);
             int left, right;
 
-            if (selectedTitle != null && selectedTitle.getWidth() > 0) {
-                // calculate indicator left
-                /*left = selectedTitle.getLeft() + (selectedTitle.getWidth() - mSelectedIndicatorWidth) / 2;
-                right = left + mSelectedIndicatorWidth;*/
-                left = selectedTitle.getLeft();
-                right = left + selectedTitle.getWidth();
+            if (selectedTitleTab != null && selectedTitleTab.getWidth() > 0) {
+                if (TYPE_DEFAULT_SYSTEM.equals(mIndicatorType)) {
+                    left = selectedTitleTab.getLeft();
+                    right = left + selectedTitleTab.getWidth();
 
-
-                if (mSelectionOffset > 0f && mSelectedPosition < getChildCount() - 1) {
-                    // Draw the selection partway between the tabs
-                    View nextTitle = getChildAt(mSelectedPosition + 1);
-                    if (mSelectionOffset <= 0.5f) {
-                        left = left;
-                    } else {
-                        left = (int) (left + ((nextTitle.getLeft() - left) * 2 * (mSelectionOffset - 0.5f)));
+                    if (mSelectionOffset > 0f && mSelectedPosition < getChildCount() - 1) {
+                        // Draw the selection partway between the tabs
+                        View nextTitle = getChildAt(mSelectedPosition + 1);
+                        left = (int) (mSelectionOffset * nextTitle.getLeft() +
+                            (1.0f - mSelectionOffset) * left);
+                        right = (int) (mSelectionOffset * nextTitle.getRight() +
+                            (1.0f - mSelectionOffset) * right);
                     }
-                    right = (int) (mSelectionOffset * nextTitle.getRight() +
-                        (1.0f - mSelectionOffset) * right);
+                } else if (TYPE_FIXED.equals(mIndicatorType)) {
+                    // calculate indicator left
+                    left = selectedTitleTab.getLeft() + (selectedTitleTab.getWidth() - mSelectedIndicatorWidth) / 2;
+                    right = left + mSelectedIndicatorWidth;
+
+                    if (mSelectionOffset > 0f && mSelectedPosition < getChildCount() - 1) {
+                        // Draw the selection partway between the tabs
+                        View nextTitle = getChildAt(mSelectedPosition + 1);
+                        left = (int) (mSelectionOffset * (nextTitle.getLeft() + (nextTitle.getWidth() - mSelectedIndicatorWidth) / 2)
+                            + (1.0f - mSelectionOffset) * left);
+                        right = left + mSelectedIndicatorWidth;
+                    }
+                }else {
+                    final int widthTabLine = getTabAt(mSelectedPosition).mView.mTabIndicatorInfoWidth;
+                    final int gapWidth =  (selectedTitleTab.getWidth() - widthTabLine) / 2;
+                    left = selectedTitleTab.getLeft() + gapWidth;
+                    right = left + widthTabLine;
+
+                    if (mSelectionOffset > 0f && mSelectedPosition < getChildCount() - 1) {
+                        // Draw the selection partway between the tabs
+                        View nextTitle = getChildAt(mSelectedPosition + 1);
+                        final int nextWidthTabLine = getTabAt(mSelectedPosition + 1).mView.mTabIndicatorInfoWidth;
+                        final int nextGapWidth = (nextTitle.getWidth() - nextWidthTabLine) / 2;
+                        if (mSelectionOffset <= 0.5f) {
+                            left = left;
+                        } else {
+                            // 利用两点确定一直线求出方程,x 变量 mSelectionOffset
+                            left = left + (int) (2 * (widthTabLine + gapWidth + nextGapWidth) * (mSelectionOffset - 0.5f));
+                        }
+                        right = (int) (mSelectionOffset * (nextTitle.getRight() - nextGapWidth) +
+                            (1.0f - mSelectionOffset) * right);
+                    }
                 }
             } else {
                 left = right = -1;
