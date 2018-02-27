@@ -7,11 +7,11 @@
       <module fileurl="file://$PROJECT_DIR$/animationphysic/animationphysic.iml" filepath="$PROJECT_DIR$/animationphysic/animationphysic.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/appdemofort/appdemofort.iml" filepath="$PROJECT_DIR$/appdemofort/appdemofort.iml" />
-      <module fileurl="file://$PROJECT_DIR$/appimeswitch/appimeswitch.iml" filepath="$PROJECT_DIR$/appimeswitch/appimeswitch.iml" />
       <module fileurl="file://$PROJECT_DIR$/buildsrc/buildsrc.iml" filepath="$PROJECT_DIR$/buildsrc/buildsrc.iml" />
       <module fileurl="file://$PROJECT_DIR$/customviewdemo/customviewdemo.iml" filepath="$PROJECT_DIR$/customviewdemo/customviewdemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/hintdrawdemo/hintdrawdemo.iml" filepath="$PROJECT_DIR$/hintdrawdemo/hintdrawdemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/hotfixpatch/hotfixpatch.iml" filepath="$PROJECT_DIR$/hotfixpatch/hotfixpatch.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlinapp/kotlinapp.iml" filepath="$PROJECT_DIR$/kotlinapp/kotlinapp.iml" />
       <module fileurl="file://$PROJECT_DIR$/nestedscrolldemo/nestedscrolldemo.iml" filepath="$PROJECT_DIR$/nestedscrolldemo/nestedscrolldemo.iml" />
     </modules>
   </component>

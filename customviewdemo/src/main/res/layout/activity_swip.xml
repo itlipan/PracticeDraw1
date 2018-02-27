@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.souche.fengche.appimeswitch.com.souche.fengche.clickexpendviewdemo.drag.swipe.SwipeBackFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.souche.fengche.appimeswitch.com.souche.fengche.clickexpendviewdemo.drag.swipe.SwipActivity">
+
+    <TextView
+        android:layout_width="40dp"
+        android:layout_height="match_parent"
+        android:background="@color/colorAccent"
+        android:text="Backing"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary">
+
+    </LinearLayout>
+
+
+</com.souche.fengche.appimeswitch.com.souche.fengche.clickexpendviewdemo.drag.swipe.SwipeBackFrameLayout>
