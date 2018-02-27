@@ -1988,10 +1988,20 @@ public class ReDefinedTabLayout extends HorizontalScrollView {
                 return;
             }
 
-           /* final int targetLeft = targetView.getLeft() + (targetView.getWidth() - mSelectedIndicatorWidth) / 2;
-            final int targetRight = targetLeft + mSelectedIndicatorWidth;*/
-            final int targetLeft = targetView.getLeft();
-            final int targetRight = targetView.getRight();
+            final int [] targetLeft = new int[]{targetView.getLeft()};
+            final int [] targetRight = new int[]{targetView.getRight()};
+            if (TYPE_DEFAULT_SYSTEM.equals(mIndicatorType)) {
+                // do nothing
+            } else if (TYPE_FIXED.equals(mIndicatorType)) {
+                final int widthLine = mSelectedIndicatorWidth;
+                targetLeft[0] = targetLeft[0] + (targetView.getWidth() -  widthLine)/2;
+                targetRight[0] = targetLeft[0] + widthLine;
+            }else {
+                final int widthLine = getTabAt(position).mView.mTabIndicatorInfoWidth;
+                targetLeft[0] = targetLeft[0] + (targetView.getWidth() -  widthLine)/2;
+                targetRight[0] = targetLeft[0] + widthLine;
+            }
+
             final int startLeft;
             final int startRight;
 
@@ -2005,21 +2015,21 @@ public class ReDefinedTabLayout extends HorizontalScrollView {
                 if (position < mSelectedPosition) {
                     // We're going end-to-start
                     if (isRtl) {
-                        startLeft = startRight = targetLeft - offset;
+                        startLeft = startRight = targetLeft[0] - offset;
                     } else {
-                        startLeft = startRight = targetRight + offset;
+                        startLeft = startRight = targetRight[0] + offset;
                     }
                 } else {
                     // We're going start-to-end
                     if (isRtl) {
-                        startLeft = startRight = targetRight + offset;
+                        startLeft = startRight = targetRight[0] + offset;
                     } else {
-                        startLeft = startRight = targetLeft - offset;
+                        startLeft = startRight = targetLeft[0] - offset;
                     }
                 }
             }
-
-            if (startLeft != targetLeft || startRight != targetRight) {
+            
+            if (startLeft != targetLeft[0] || startRight != targetRight[0]) {
                 ValueAnimator animator = mIndicatorAnimator = new ValueAnimator();
                 animator.setInterpolator(AnimationUtils.FAST_OUT_SLOW_IN_INTERPOLATOR);
                 animator.setDuration(duration);
@@ -2029,8 +2039,8 @@ public class ReDefinedTabLayout extends HorizontalScrollView {
                     public void onAnimationUpdate(ValueAnimator animator) {
                         final float fraction = animator.getAnimatedFraction();
                         setIndicatorPosition(
-                            AnimationUtils.lerp(startLeft, targetLeft, fraction),
-                            AnimationUtils.lerp(startRight, targetRight, fraction));
+                            AnimationUtils.lerp(startLeft, targetLeft[0], fraction),
+                            AnimationUtils.lerp(startRight, targetRight[0], fraction));
                     }
                 });
                 animator.addListener(new AnimatorListenerAdapter() {

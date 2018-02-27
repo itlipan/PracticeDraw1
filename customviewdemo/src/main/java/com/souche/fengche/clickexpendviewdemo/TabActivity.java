@@ -1,6 +1,7 @@
 package com.souche.fengche.clickexpendviewdemo;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -26,9 +27,18 @@ public class TabActivity extends AppCompatActivity {
         initViewPagerAdapter();
     }
 
+    /**
+     *  ViewPager 与  TabLayout 放置层次问题,可能导致 Tab 点击无效,ViewPager 拦截了 Tab 的点击事件
+     */
     private void initViewPagerAdapter() {
         mViewPager.setAdapter(new TabPagerAdapter(getSupportFragmentManager()));
-        mTab.setupWithViewPager(mViewPager);
+        for (String tabInfo : tabs) {
+            ReDefinedTabLayout.Tab tab = mTab.newTab();
+            tab.setText(tabInfo);
+            mTab.addTab(tab);
+        }
+        mTab.addOnTabSelectedListener(new ReDefinedTabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+        mViewPager.setOnPageChangeListener(new ReDefinedTabLayout.TabLayoutOnPageChangeListener(mTab));
     }
 
     private final class TabPagerAdapter extends FragmentPagerAdapter {
