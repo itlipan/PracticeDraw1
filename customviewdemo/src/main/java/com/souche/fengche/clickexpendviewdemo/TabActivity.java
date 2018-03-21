@@ -5,8 +5,10 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.TextView;
 
 import com.souche.fengche.clickexpendviewdemo.tab.TabFragment;
 import com.souche.fengche.clickexpendviewdemo.tab.widget.ReDefinedTabLayout;
@@ -16,7 +18,7 @@ public class TabActivity extends AppCompatActivity {
     private final String[] tabs = new String[]{"AAA", "BBBBBBBBBB", "C", "DD"};
 
     private ViewPager mViewPager;
-    private ReDefinedTabLayout mTab;
+    private TabLayout mTab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +35,17 @@ public class TabActivity extends AppCompatActivity {
     private void initViewPagerAdapter() {
         mViewPager.setAdapter(new TabPagerAdapter(getSupportFragmentManager()));
         for (String tabInfo : tabs) {
-            ReDefinedTabLayout.Tab tab = mTab.newTab();
-            tab.setText(tabInfo);
+            TabLayout.Tab tab = mTab.newTab();
+            tab.setCustomView(R.layout.tab_item_layout);
+            TextView tv = tab.getCustomView().findViewById(R.id.combine_title);
+            tv.setText(tabInfo);
+            TextView tvB = tab.getCustomView().findViewById(R.id.combine_badge);
+            tvB.setText("90");
+            tvB.setBackgroundColor(ContextCompat.getColor(this,R.color.colorAccent));
             mTab.addTab(tab);
         }
-        mTab.addOnTabSelectedListener(new ReDefinedTabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-        mViewPager.setOnPageChangeListener(new ReDefinedTabLayout.TabLayoutOnPageChangeListener(mTab));
+        mTab.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+        mViewPager.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTab));
     }
 
     private final class TabPagerAdapter extends FragmentPagerAdapter {

@@ -58,4 +58,13 @@
             android:text="删除"/>
 
     </com.souche.fengche.clickexpendviewdemo.swipe.LeftSwipeView>
+
+    <com.souche.fengche.clickexpendviewdemo.tv.TextDrawableView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        app:drawableLeftHeight="26dp"
+        app:drawableLeftWidth="26dp"
+        android:drawablePadding="18dp"
+        android:drawableLeft="@mipmap/ic_launcher"/>
 </LinearLayout>
