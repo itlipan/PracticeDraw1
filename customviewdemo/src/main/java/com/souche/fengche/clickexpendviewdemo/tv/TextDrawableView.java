@@ -115,25 +115,35 @@ public class TextDrawableView extends android.support.v7.widget.AppCompatTextVie
         }
 
         switch (drawableIndex) {
+            case DRAWABLE_LEFT: {
+                final int heightDiff = drawableRes.getIntrinsicHeight() / 2 - height / 2;
+                if (heightDiff > 0){
+                    rect.left = (int) ((getMeasuredWidth() - getPaint().measureText(getText().toString())) / 2);
+                    rect.right += rect.left;
+                }
+                rect.top = heightDiff;
+                rect.bottom += rect.top;
+            }
+            break;
             case DRAWABLE_RIGHT: {
                 // 高的 bounds边界在原有显示范围内进行调节
                 final int heightDiff = drawableRes.getIntrinsicHeight() / 2 - height / 2;
                 if (heightDiff < 0) {// 图标大小小于设置大小,将图片往View中心移动
                     rect.left = -(int) ((getMeasuredWidth() - getPaint().measureText(getText().toString())) / 2);
-                    rect.right = rect.left + width;
+                    rect.right += rect.left;
                 }
                 rect.top = heightDiff;
-                rect.bottom = rect.top + height;
+                rect.bottom += rect.top;
             }
             break;
             case DRAWABLE_TOP: {
                 final int heightDiff = drawableRes.getIntrinsicHeight() / 2 - height / 2;
                 rect.top = Math.abs(heightDiff);
-                rect.bottom = rect.top + height;
+                rect.bottom += rect.top;
 
                 final int diff = (drawableRes.getIntrinsicWidth() - width) / 2;
                 rect.left = diff;
-                rect.right = rect.left + width;
+                rect.right += rect.left;
             }
             break;
             default:

@@ -63,10 +63,10 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:background="@color/colorAccent"
-        android:drawableRight="@drawable/right_arrow_detailgray"
+        android:drawableLeft="@drawable/right_arrow_detailgray"
         android:gravity="center"
         android:drawablePadding="8dp"
         android:text="选择"
-        app:drawableRightWidth="52dp"
-        app:drawableRightHeight="52dp"/>
+        app:drawableLeftHeight="12dp"
+        app:drawableLeftWidth="12dp"/>
 </LinearLayout>
