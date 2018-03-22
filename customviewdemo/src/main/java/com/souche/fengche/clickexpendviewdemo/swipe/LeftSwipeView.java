@@ -72,8 +72,6 @@ public class LeftSwipeView extends RelativeLayout {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         // changed 参数表示 该 View 是否被更新了新的位置或尺寸
-        Log.e(">>>>>>>", "left:" + l + "\t" + "t:" + t);
-
         //根据自身位置进行 childView 位置指定
         int left = 0, right = 0;
         for (int i = 0, size = getChildCount(); i < size; i++) {

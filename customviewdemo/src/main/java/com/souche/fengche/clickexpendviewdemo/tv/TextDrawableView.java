@@ -2,19 +2,27 @@ package com.souche.fengche.clickexpendviewdemo.tv;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
 import com.souche.fengche.clickexpendviewdemo.R;
 
 /**
  * Created by Lee on 2018/3/21.
- *
+ * <p>
  * 用于设置点击箭头的 TextView => 可以控制箭头大小
  */
 
 public class TextDrawableView extends android.support.v7.widget.AppCompatTextView {
+    private static final int DRAWABLE_LEFT = 0;
+    private static final int DRAWABLE_TOP = 1;
+    private static final int DRAWABLE_RIGHT = 2;
+    private static final int DRAWABLE_BOTTOM = 3;
+
+
     private int mLeftWidth;
     private int mLeftHeight;
     private int mTopWidth;
@@ -23,18 +31,23 @@ public class TextDrawableView extends android.support.v7.widget.AppCompatTextVie
     private int mRightHeight;
     private int mBottomWidth;
     private int mBottomHeight;
+    /**
+     * Drawable Caches
+     */
+    private Drawable[] drawablesResCaches;
+    private Rect mRectCache = new Rect(0, 0, 0, 0);
 
     public TextDrawableView(Context context) {
-        this(context,null);
+        this(context, null);
     }
 
     public TextDrawableView(Context context, AttributeSet attrs) {
-        this(context, attrs,0);
+        this(context, attrs, 0);
     }
 
     public TextDrawableView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initAttrs(context,attrs);
+        initAttrs(context, attrs);
     }
 
     private void initAttrs(Context context, AttributeSet attrs) {
@@ -53,24 +66,31 @@ public class TextDrawableView extends android.support.v7.widget.AppCompatTextVie
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        resetDrawableSize();
+        drawablesResCaches = getCompoundDrawables();
     }
 
-    private void resetDrawableSize() {
-        final Drawable[] drawablesRes = getCompoundDrawables();
+    @Override
+    public void setCompoundDrawablesRelativeWithIntrinsicBounds(@Nullable Drawable start, @Nullable Drawable top, @Nullable Drawable end, @Nullable Drawable bottom) {
+        super.setCompoundDrawablesRelativeWithIntrinsicBounds(start, top, end, bottom);
+        drawablesResCaches = getCompoundDrawables();
+    }
+
+    private void resetDrawableSize(Drawable[] drawablesRes) {
+        if (drawablesRes == null) return;
+
         for (int i = 0; i < drawablesRes.length; i++) {
             switch (i) {
-                case 0: //left
-                    setDrawableBounds(i,drawablesRes[i],mLeftWidth,mLeftHeight);
+                case DRAWABLE_LEFT: //left
+                    setDrawableBounds(i, drawablesRes[i], mLeftWidth, mLeftHeight);
                     break;
-                case 1:// top
-                    setDrawableBounds(i,drawablesRes[i],mTopWidth,mTopHeight);
+                case DRAWABLE_TOP:// top
+                    setDrawableBounds(i, drawablesRes[i], mTopWidth, mTopHeight);
                     break;
-                case 2: //right
-                    setDrawableBounds(i,drawablesRes[i],mRightWidth,mRightHeight);
+                case DRAWABLE_RIGHT: //right
+                    setDrawableBounds(i, drawablesRes[i], mRightWidth, mRightHeight);
                     break;
-                case 3: //bottom
-                    setDrawableBounds(i,drawablesRes[i],mBottomWidth,mBottomHeight);
+                case DRAWABLE_BOTTOM: //bottom
+                    setDrawableBounds(i, drawablesRes[i], mBottomWidth, mBottomHeight);
                     break;
                 default:
                     break;
@@ -79,13 +99,13 @@ public class TextDrawableView extends android.support.v7.widget.AppCompatTextVie
     }
 
 
-    private void setDrawableBounds(int drawableIndex,Drawable drawableRes, int width, int height) {
+    private void setDrawableBounds(final int drawableIndex, final Drawable drawableRes, final int width, final int height) {
         if (drawableRes == null) return;
+        final double scaleSize = drawableRes.getIntrinsicHeight() / drawableRes.getIntrinsicWidth();
+        final Rect rect = resetRect(height, width);
 
-        final double scaleSize = drawableRes.getIntrinsicHeight()/drawableRes.getIntrinsicWidth();
-        drawableRes.setBounds(0,0,width,height);
-        final Rect rect = drawableRes.getBounds();
-        if ( rect.right != 0 || rect.bottom != 0) {// 设置单个值,另一个值按照原有高宽比自适应
+        // 设置单个值,另一个值按照原有高宽比自适应
+        if (rect.right != 0 || rect.bottom != 0) {
             if (rect.right == 0) {
                 rect.right = (int) (height * scaleSize);
             }
@@ -94,21 +114,47 @@ public class TextDrawableView extends android.support.v7.widget.AppCompatTextVie
             }
         }
 
-        if (drawableIndex == 0) {
-            final int diff = drawableRes.getIntrinsicWidth() - width;
-            if (diff > 0) {
-                rect.left += diff;
-                rect.right += diff;
+        switch (drawableIndex) {
+            case DRAWABLE_RIGHT: {
+                // 高的 bounds边界在原有显示范围内进行调节
+                final int heightDiff = drawableRes.getIntrinsicHeight() / 2 - height / 2;
+                if (heightDiff < 0) {// 图标大小小于设置大小,将图片往View中心移动
+                    rect.left = -(int) ((getMeasuredWidth() - getPaint().measureText(getText().toString())) / 2);
+                    rect.right = rect.left + width;
+                }
+                rect.top = heightDiff;
+                rect.bottom = rect.top + height;
             }
-        }
-        if (drawableIndex == 1) {
-            final int diff = drawableRes.getIntrinsicHeight() - height;
-            if (diff > 0) {
-                rect.top += diff;
-                rect.bottom += diff;
+            break;
+            case DRAWABLE_TOP: {
+                final int heightDiff = drawableRes.getIntrinsicHeight() / 2 - height / 2;
+                rect.top = Math.abs(heightDiff);
+                rect.bottom = rect.top + height;
+
+                final int diff = (drawableRes.getIntrinsicWidth() - width) / 2;
+                rect.left = diff;
+                rect.right = rect.left + width;
             }
+            break;
+            default:
+                break;
         }
+
         drawableRes.setBounds(rect);
+    }
+
+    private Rect resetRect(int height, int width) {
+        mRectCache.left = 0;
+        mRectCache.top = 0;
+        mRectCache.right = width;
+        mRectCache.bottom = height;
+        return mRectCache;
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        resetDrawableSize(drawablesResCaches);
     }
 
 }
