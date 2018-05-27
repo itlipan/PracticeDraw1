@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.souche.fengche.clickexpendviewdemo">
+          package="com.souche.fengche.viewdemo">
 
     <application
         android:name=".MainApplication"
@@ -22,6 +22,8 @@
         <activity android:name=".TabActivity">
         </activity>
         <activity android:name=".WidgetsActivity">
+        </activity>
+        <activity android:name=".ButterknifeActivity">
         </activity>
     </application>
 

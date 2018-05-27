@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.souche.fengche.clickexpendviewdemo.MainActivity">
+    tools:context="com.souche.fengche.viewdemo.MainActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -15,7 +15,7 @@
         android:scrollbarThumbVertical="@drawable/prome_scroller"
         android:scrollbars="vertical">
 
-        <com.souche.fengche.clickexpendviewdemo.expand.ExpandTextView
+        <com.souche.fengche.viewdemo.expand.ExpandTextView
             android:id="@+id/tv"
             android:layout_width="match_parent"
             android:layout_height="300dp"
@@ -23,7 +23,7 @@
             android:layout_marginRight="16dp"/>
     </ScrollView>
 
-    <com.souche.fengche.clickexpendviewdemo.swipe.LeftSwipeView
+    <com.souche.fengche.viewdemo.swipe.LeftSwipeView
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginBottom="16dp"
@@ -57,9 +57,9 @@
             android:gravity="center"
             android:text="删除"/>
 
-    </com.souche.fengche.clickexpendviewdemo.swipe.LeftSwipeView>
+    </com.souche.fengche.viewdemo.swipe.LeftSwipeView>
 
-    <com.souche.fengche.clickexpendviewdemo.tv.TextDrawableView
+    <com.souche.fengche.viewdemo.tv.TextDrawableView
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:background="@color/colorAccent"

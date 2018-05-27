@@ -1,8 +1,8 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.1.51'
-    ext.gradle_version = '3.0.1'
+    ext.kotlin_version = '1.2.30'
+    ext.gradle_version = '3.1.2'
     repositories {
         jcenter()
         google()
@@ -10,7 +10,7 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:$gradle_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
+        classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -33,4 +33,6 @@ ext {
     compileSdkVersion = 26
     targetSdkVersion = 25
     minSdkVersion = 15
+
+    butterknife = '8.4.0'
 }

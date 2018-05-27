@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.souche.fengche.clickexpendviewdemo.WidgetsActivity">
+    tools:context="com.souche.fengche.viewdemo.WidgetsActivity">
 
     <CheckBox
         android:id="@+id/checkBox"
@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
 
-    <com.souche.fengche.clickexpendviewdemo.switcher.IOSSwitcher
+    <com.souche.fengche.viewdemo.switcher.IOSSwitcher
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginBottom="8dp"
