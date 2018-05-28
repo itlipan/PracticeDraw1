@@ -1,4 +1,4 @@
-package com.souche.fengche.viewdemo;
+package com.souche.fengche.viewdemo.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -10,6 +10,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
+import com.souche.fengche.viewdemo.R;
 import com.souche.fengche.viewdemo.tab.TabFragment;
 import com.souche.fengche.viewdemo.tab.widget.ReDefinedTabLayout;
 

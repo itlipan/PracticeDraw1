@@ -1,7 +1,9 @@
-package com.souche.fengche.viewdemo;
+package com.souche.fengche.viewdemo.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.souche.fengche.viewdemo.R;
 
 public class WidgetsActivity extends AppCompatActivity {
 

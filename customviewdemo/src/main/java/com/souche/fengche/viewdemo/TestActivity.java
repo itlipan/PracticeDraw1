@@ -7,12 +7,13 @@ import android.util.Log;
 import android.view.View;
 
 import com.google.gson.Gson;
+import com.souche.fengche.viewdemo.activity.FrescoActivity;
+import com.souche.fengche.viewdemo.activity.MainActivity;
+import com.souche.fengche.viewdemo.activity.TabActivity;
+import com.souche.fengche.viewdemo.activity.WidgetsActivity;
 import com.souche.fengche.viewdemo.gson.CustomerBaseInfo;
 
 import java.net.URLDecoder;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class TestActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -46,6 +47,10 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
             }
             case R.id.button5: {
 
+            }
+            case R.id.button7: {
+                Intent intent = new Intent(TestActivity.this, FrescoActivity.class);
+                startActivity(intent);
             }
             break;
         }

@@ -1,14 +1,16 @@
-package com.souche.fengche.viewdemo;
+package com.souche.fengche.viewdemo.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.souche.fengche.viewdemo.R;
+
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ButterknifeActivity extends AppCompatActivity {
+public class ButterKnifeActivity extends AppCompatActivity {
 
     private static int sActLayoutID;
     private static int sButtonID;
@@ -25,7 +27,11 @@ public class ButterknifeActivity extends AppCompatActivity {
         ButterKnife.bind(this);
     }
 
-    @OnClick(value = sButtonID)
+    /**
+     * Value 必须是常量表达式
+     * @param view
+     */
+    @OnClick(value = R.id.button6)
     void onClick(View view){
 
     }

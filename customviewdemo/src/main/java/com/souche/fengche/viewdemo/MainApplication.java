@@ -18,6 +18,7 @@ public class MainApplication extends Application {
         XLog.init();
     }
 
+
     @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
